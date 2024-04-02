@@ -45,7 +45,7 @@ for usr in "$@"; do
       files=($home/traininglab/*(N.))
       try tar cf $destdir/$usr-$lab.tar -C $home/traininglab ${files:t};;
     stacklab)
-      try tar cf $destdir/$usr-$lab.tar -C $home/ stacklab/ .history .stacklab;;
+      try tar cf $destdir/$usr-$lab.tar -C $home/ --exclude=Makefile stacklab/ --transform='s@^stacklab/@@' .history .stacklab;;
     *)
       try cp -f $home/submissions/$usr-$lab.tar $destdir/;;
   esac

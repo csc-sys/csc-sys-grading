@@ -74,7 +74,7 @@ if [[ -d $handout ]]; then
     orig=$handout
 else
     orig=$(mktemp -d)
-    tar xvf $handout --strip-components=1 -C $orig/ | tee -a $logfile
+    tar xvf $handout --strip-components=1 -C $orig/ || exit 1
     cleanup=1
 fi
 

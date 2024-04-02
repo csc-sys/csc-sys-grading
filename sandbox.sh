@@ -16,6 +16,7 @@ bwrap --ro-bind /usr /usr \
       --symlink usr/local /local \
       --bind $PWD /tmp \
       --bind /opt /opt \
+      --bind /home/prof /home/prof \
       --chdir /tmp \
       --unshare-all \
       --die-with-parent \
