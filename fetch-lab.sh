@@ -1,7 +1,7 @@
 #!/bin/zsh -f
 
 PROG=$0
-labs=(traininglab-part1 traininglab-part2 mini-x86-parsing mini-x86-alu mini-x86-cmu stacklab asmlab dictlab)
+labs=(traininglab-part1 traininglab-part2 mini-x86-parsing mini-x86-alu mini-x86-cmu stacklab asmlab dictlab shelllab)
 
 usage () {
   echo "usage: $PROG LABNAME DESTDIR [USER...]"
@@ -35,7 +35,15 @@ try () {
   fi
 }
 
-for usr in "$@"; do
+if [[ -d $1 ]]; then
+  dirs=$@[@]
+else
+  ## assuming we're passed a roster
+  (( $# == 1 )) || usage
+  dirs=($(cut -d':' -f3 $1 | tr 'A-Z' 'a-z' | sed 's/$/_/'))
+fi
+
+for usr in $dirs; do
   usr=${usr:t}
   home=/home/$usr
   case $lab; in
@@ -47,7 +55,7 @@ for usr in "$@"; do
     stacklab)
       try tar cf $destdir/$usr-$lab.tar -C $home/ --exclude=Makefile stacklab/ --transform='s@^stacklab/@@' .history .stacklab;;
     *)
-      try cp -f $home/submissions/$usr-$lab.tar $destdir/;;
+      try cp -af $home/submissions/$usr-$lab.tar $destdir/;;
   esac
 done
 
