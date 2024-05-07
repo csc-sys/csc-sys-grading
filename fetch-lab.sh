@@ -1,7 +1,7 @@
 #!/bin/zsh -f
 
 PROG=$0
-labs=(traininglab-part1 traininglab-part2 mini-x86-parsing mini-x86-alu mini-x86-cmu stacklab asmlab dictlab shelllab cachelab)
+labs=(traininglab-part1 traininglab-part2 mini-x86-parsing mini-x86-alu mini-x86-cmu stacklab asmlab dictlab shelllab cachelab locksmith)
 
 usage () {
   echo "usage: $PROG LABNAME DESTDIR [USER...]"
@@ -54,6 +54,8 @@ for usr in $dirs; do
       try tar cf $destdir/$usr-$lab.tar -C $home/traininglab ${files:t};;
     stacklab)
       try tar cf $destdir/$usr-$lab.tar -C $home/ --exclude=Makefile stacklab/ --transform='s@^stacklab/@@' .history .stacklab;;
+    locksmith)
+      try tar cf $destdir/$usr-$lab.tar -C $home/submissions $usr-locksmith.txt;;
     *)
       try cp -af $home/submissions/$usr-$lab.tar $destdir/;;
   esac

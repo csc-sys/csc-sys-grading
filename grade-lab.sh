@@ -57,8 +57,9 @@ shift 3
 save-score () {
     username=${${1:t}/_*/}
     username=${(U)username}
+    score=${2// /}
     sed -i "/^$username,/d" $scorefile
-    echo "$username,$2," >> $scorefile
+    echo "$username,${score/\//,}," >> $scorefile
 }
 
 # Save the output in $logfile, but print only one dot per line; shows progress without clutter.
@@ -96,7 +97,7 @@ for f in "$@"; do
     echo 'RUNNING DRIVER...' | tee -a $logfile
     touch tests/.agreement-accepted &> /dev/null
     dotoutput timeout --foreground -k 8 120 $SANDBOX make test
-    score=$(tail -n5 $logfile | sed -n '/.*FINAL.*/ { s@.*FINAL[^[:space:]]*[[:space:]]*\([0-9]*\)[[:space:]]*/.*@\1@p;q }')
+    score=$(tail -n5 $logfile | sed -n '/.*FINAL.*/ { s@.*FINAL[^[:space:]]*[[:space:]]*\([0-9]*[[:space:]]*/[[:space:]].*[0-9]*\)@\1@p;q }')
     echo "SCORE: $score"
     save-score $f $score
     restore-files

@@ -8,7 +8,7 @@ bwrap --ro-bind /usr /usr \
       --dir /var \
       --symlink ../tmp var/tmp \
       --proc /proc \
-      --dev /dev \
+      --dev-bind /dev dev \
       --symlink usr/lib /lib \
       --symlink usr/lib64 /lib64 \
       --symlink usr/bin /bin \
@@ -17,8 +17,9 @@ bwrap --ro-bind /usr /usr \
       --bind $PWD /tmp \
       --bind /opt /opt \
       --bind /home/prof /home/prof \
-      --chdir /tmp \
       --unshare-all \
+      --chdir /tmp/ \
+      --uid 1002 \
       --die-with-parent \
       --dir /run/user/$UID \
       --setenv XDG_RUNTIME_DIR "/run/user/$UID" \
@@ -26,6 +27,7 @@ bwrap --ro-bind /usr /usr \
       $alternatives \
       --file 8 /etc/passwd \
       --file 9 /etc/group \
+      --chmod 0555 / \
       "$@" \
     8< <(getent passwd $UID 65534) \
     9< <(getent group $GID 65534)
