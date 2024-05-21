@@ -1,7 +1,7 @@
 #!/bin/zsh -f
 
 PROG=$0
-labs=(traininglab-part1 traininglab-part2 mini-x86-parsing mini-x86-alu mini-x86-cmu stacklab asmlab dictlab shelllab cachelab locksmith)
+labs=(traininglab-part1 traininglab-part2 mini-x86-parsing mini-x86-alu mini-x86-cmu stacklab asmlab dictlab shelllab cachelab locksmith malloclab)
 
 usage () {
   echo "usage: $PROG LABNAME DESTDIR [USER...]"

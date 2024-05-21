@@ -5,6 +5,7 @@ if [[ -e /etc/alternatives ]]; then
 fi
 
 bwrap --ro-bind /usr /usr \
+      --ro-bind /etc/fonts /etc/fonts \
       --dir /var \
       --symlink ../tmp var/tmp \
       --proc /proc \
