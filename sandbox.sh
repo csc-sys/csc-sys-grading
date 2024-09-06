@@ -4,6 +4,7 @@ if [[ -e /etc/alternatives ]]; then
   alternatives=(--ro-bind /etc/alternatives /etc/alternatives)
 fi
 
+## unshare-net and unshare-cgroup are disabled as there are labs that require them.
 bwrap --ro-bind /usr /usr \
       --ro-bind /etc/fonts /etc/fonts \
       --dir /var \
@@ -18,7 +19,9 @@ bwrap --ro-bind /usr /usr \
       --bind $PWD /tmp \
       --bind /opt /opt \
       --bind /home/prof /home/prof \
-      --unshare-all \
+      --bind /var/www /var/www \
+      --bind /sys/fs/cgroup /sys/fs/cgroup \
+      --unshare-user-try --unshare-ipc --unshare-pid --unshare-uts \
       --chdir /tmp/ \
       --uid 1002 \
       --die-with-parent \
@@ -26,6 +29,7 @@ bwrap --ro-bind /usr /usr \
       --setenv XDG_RUNTIME_DIR "/run/user/$UID" \
       --setenv PS1 "bwrap$ " \
       $alternatives \
+      --ro-bind /etc/hosts /etc/hosts \
       --file 8 /etc/passwd \
       --file 9 /etc/group \
       --chmod 0555 / \
