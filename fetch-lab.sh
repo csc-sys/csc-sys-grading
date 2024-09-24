@@ -50,8 +50,8 @@ for usr in $dirs; do
     traininglab-part1)
       try tar cf $destdir/$usr-$lab.tar -C $home/traininglab/shell .;;
     traininglab-part2)
-      files=($home/traininglab/*(N.))
-      try tar cf $destdir/$usr-$lab.tar -C $home/traininglab ${files:t};;
+      # files=($home/traininglab/*(N.))
+      try tar cf $destdir/$usr-$lab.tar -C $home/traininglab-part2 .;;
     stacklab)
       try tar cf $destdir/$usr-$lab.tar -C $home/ --exclude=Makefile stacklab/ --transform='s@^stacklab/@@' .history .stacklab;;
     locksmith)
