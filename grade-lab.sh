@@ -96,6 +96,8 @@ for f in "$@"; do
     }
     echo 'RUNNING DRIVER...' | tee -a $logfile
     touch tests/.agreement-accepted &> /dev/null
+    # Some projects play with the username, checked using USER, so set it.
+    export USER=${${f:t}/_*/_}
     dotoutput timeout --foreground -k 8 120 $SANDBOX make test
     score=$(tail -n5 $logfile | sed -n '/.*FINAL.*/ { s@.*FINAL[^[:space:]]*[[:space:]]*\([0-9]*[[:space:]]*/[[:space:]].*[0-9]*\)@\1@p;q }')
     echo "SCORE: $score"

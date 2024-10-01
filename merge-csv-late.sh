@@ -27,10 +27,11 @@ for user in $(cut -d',' -f1 "$@" | sort -u); do
 
   origscore=$((origscore > outof ? outof : origscore))
   newscore=$((newscore > outof ? outof : newscore))
-  
   if (( newscore > origscore )); then
-    (( origscore = origscore + (newscore - origscore) * 60 / 100 ))
+    (( origscore = origscore + (newscore - origscore) * 60. / 100. ))
   fi
   (( origscore += bonus ))
-  echo "$user,$origscore,"
+  typeset -i round
+  (( round = origscore * 100 ))
+  echo "$user,$((round / 100)).$((round % 100)),"
 done
