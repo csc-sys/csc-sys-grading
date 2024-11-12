@@ -3,6 +3,8 @@
 SCRIPT_PATH="${0:A:h}"
 SANDBOX=$SCRIPT_PATH/sandbox.sh
 
+TIMEOUT=${TIMEOUT:-120}
+
 exec 3>&1
 
 PROG=$0
@@ -98,7 +100,7 @@ for f in "$@"; do
     touch tests/.agreement-accepted &> /dev/null
     # Some projects play with the username, checked using USER, so set it.
     export USER=${${f:t}/_*/_}
-    dotoutput timeout --foreground -k 8 120 $SANDBOX make test
+    dotoutput timeout --foreground -k 8 $TIMEOUT $SANDBOX make test
     score=$(tail -n5 $logfile | sed -n '/.*FINAL.*/ { s@.*FINAL[^[:space:]]*[[:space:]]*\([0-9]*[[:space:]]*/[[:space:]]*[0-9]*\).*@\1@p;q }')
     echo "SCORE: $score"
     save-score $f $score

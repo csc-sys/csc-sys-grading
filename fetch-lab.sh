@@ -53,7 +53,7 @@ for usr in $dirs; do
       # files=($home/traininglab/*(N.))
       try tar cf $destdir/$usr-$lab.tar -C $home/traininglab-part2 .;;
     stacklab)
-      try tar cf $destdir/$usr-$lab.tar -C $home/ --exclude=Makefile stacklab/ --transform='s@^stacklab/@@' .history .stacklab;;
+      try tar cf $destdir/$usr-$lab.tar -C $home/ --exclude=Makefile stacklab/ --transform='s@^stacklab/@@' .history .gdb_history .stacklab;;
     locksmith)
       try tar cf $destdir/$usr-$lab.tar -C $home/submissions $usr-locksmith.txt;;
     *)
