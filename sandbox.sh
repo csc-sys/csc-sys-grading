@@ -20,7 +20,9 @@ bwrap --ro-bind /usr /usr \
       --bind /opt /opt \
       --bind /home/prof /home/prof \
       --bind /var/www /var/www \
-      --bind /sys/fs/cgroup /sys/fs/cgroup \
+      --bind /etc/ssl /etc/ssl \
+      --bind /etc/pki /etc/pki \
+      --bind /etc/java /etc/java \
       --unshare-user-try --unshare-ipc --unshare-pid --unshare-uts \
       --chdir /tmp/ \
       --uid 1002 \
@@ -36,3 +38,8 @@ bwrap --ro-bind /usr /usr \
       "$@" \
     8< <(getent passwd $UID 65534) \
     9< <(getent group $GID 65534)
+
+
+#      --bind /sys /sys \
+#      --bind /usr/share /usr/share \
+#      --bind /usr/lib /usr/lib \
