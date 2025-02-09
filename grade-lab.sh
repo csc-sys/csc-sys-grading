@@ -36,6 +36,7 @@ restore-files () {
     done
     for f in **/*.BAK; do
       mv $f ${f/.BAK/}
+      touch ${f/.BAK/}
     done
 }
 
@@ -89,7 +90,7 @@ for f in "$@"; do
     logfile=$logfolder/${f:t}.log
     rm -f $logfile
     cd $orig
-    extract-files $f '*' # I use to restrict the files being extracted
+    extract-files $f '*.c' # I use to restrict the files being extracted
     echo 'COMPILING PROJECT...' | tee -a $logfile
     dotoutput $SANDBOX make
     (( $? == 0 )) || {
