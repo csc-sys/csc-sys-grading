@@ -3,6 +3,12 @@
 if [[ -e /etc/alternatives ]]; then
   alternatives=(--ro-bind /etc/alternatives /etc/alternatives)
 fi
+java=(/etc/java*(N))
+if [[ $java ]]; then
+  java=(--bind $java[1] $java[1])
+else
+  java=()
+fi
 
 ## unshare-net and unshare-cgroup are disabled as there are labs that require them.
 bwrap --ro-bind /usr /usr \
@@ -22,7 +28,7 @@ bwrap --ro-bind /usr /usr \
       --bind /var/www /var/www \
       --bind /etc/ssl /etc/ssl \
       --bind /etc/pki /etc/pki \
-      --bind /etc/java /etc/java \
+      $java \
       --unshare-user-try --unshare-ipc --unshare-pid --unshare-uts \
       --chdir /tmp/ \
       --uid 1002 \

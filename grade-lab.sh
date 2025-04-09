@@ -32,7 +32,7 @@ setopt null_glob
 # Delete all files in $extracted_files, restoring the .BAK files.
 restore-files () {
     for f in $extracted_files; do
-      [[ -f $f ]] && rm $f
+      [[ -f $f ]] && rm -f $f
     done
     for f in **/*.BAK; do
       mv $f ${f/.BAK/}
@@ -58,7 +58,7 @@ shift 3
 # Put the score in scorefile, possibly removing the file beforehand.
 # Adjust to correctly extract username. 
 save-score () {
-    username=${${1:t}/_*/}
+    username=${${1:t}/[_-]*/}
     username=${(U)username}
     score=${2// /}
     sed -i "/^$username,/d" $scorefile
@@ -90,7 +90,7 @@ for f in "$@"; do
     logfile=$logfolder/${f:t}.log
     rm -f $logfile
     cd $orig
-    extract-files $f '*.c' # I use to restrict the files being extracted
+    extract-files $f '*' # I use to restrict the files being extracted
     echo 'COMPILING PROJECT...' | tee -a $logfile
     dotoutput $SANDBOX make
     (( $? == 0 )) || {

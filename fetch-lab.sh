@@ -9,8 +9,8 @@ usage () {
   for lab in $labs; do
     echo "    - $lab"
   done
-  echo "  USER is either a username (blah42_) or a user's home folder (/home/blah42_)"
-  echo "example: $PROG $labs[1] ~/$labs[1]-subs/ /home/*_"
+  echo "  USER is either a username (blah42) or a user's home folder (/home/blah42)"
+  echo "example: $PROG $labs[1] ~/$labs[1]-subs/ /home/*"
   exit 2
 }
 
@@ -40,7 +40,7 @@ if [[ -d $1 ]]; then
 else
   ## assuming we're passed a roster
   (( $# == 1 )) || usage
-  dirs=($(cut -d':' -f3 $1 | tr 'A-Z' 'a-z' | sed 's/$/_/'))
+  dirs=($(cut -d':' -f3 $1 | tr 'A-Z' 'a-z' | sed 's/$//'))  # used to be: s/$/_/
 fi
 
 for usr in $dirs; do
