@@ -1,4 +1,5 @@
 #!/bin/zsh -f
+SET_UID=${SET_UID:-$UID}
 
 if [[ -e /etc/alternatives ]]; then
   alternatives=(--ro-bind /etc/alternatives /etc/alternatives)
@@ -29,9 +30,9 @@ bwrap --ro-bind /usr /usr \
       --bind /etc/ssl /etc/ssl \
       --bind /etc/pki /etc/pki \
       $java \
-      --unshare-user-try --unshare-ipc --unshare-pid --unshare-uts \
+      --unshare-user --unshare-ipc --unshare-pid --unshare-uts \
       --chdir /tmp/ \
-      --uid 1002 \
+      --uid $SET_UID \
       --die-with-parent \
       --dir /run/user/$UID \
       --setenv XDG_RUNTIME_DIR "/run/user/$UID" \
@@ -42,7 +43,7 @@ bwrap --ro-bind /usr /usr \
       --file 9 /etc/group \
       --chmod 0555 / \
       "$@" \
-    8< <(getent passwd $UID 65534) \
+    8< <(getent passwd $SET_UID 65534) \
     9< <(getent group $GID 65534)
 
 

@@ -9,8 +9,9 @@ exec 3>&1
 
 PROG=$0
 usage () {
-    echo "usage: $PROG HANDOUT SCOREFILE LOGFOLDER [TARBALLS...]"
+    echo "usage: $PROG [-u] HANDOUT SCOREFILE LOGFOLDER [TARBALLS...]"
     echo "HANDOUT is either a folder or a tarball."
+    echo "-u: Set SET_UID to the user UID before calling $SANDBOX."
     exit
 }
 
@@ -40,11 +41,16 @@ restore-files () {
     done
 }
 
-# Debug flag
-if [[ $1 == '-x' ]]; then
-  setopt xtrace
+# options
+set_uid=false
+while (( $# > 0 )); do
+  case $1; in
+    -x) setopt xtrace;;
+    -u) set_uid=true;;
+    *) break;;
+  esac
   shift
-fi
+done
 
 (( $# > 3 )) || usage
 
@@ -92,6 +98,10 @@ for f in "$@"; do
     cd $orig
     extract-files $f '*' # I use to restrict the files being extracted
     echo 'COMPILING PROJECT...' | tee -a $logfile
+    if $set_uid; then
+      export SET_UID=$(id -u ${${f:t}/[-]*/})
+      [[ $SET_UID ]] || { echo "Cannot find matching UID."; unset SET_UID }
+    fi
     dotoutput $SANDBOX make
     (( $? == 0 )) || {
         echo 'COMPILATION FAILED.'
