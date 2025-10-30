@@ -1,9 +1,9 @@
 #!/bin/zsh
 
-(( $# == 2 )) || { echo "usage: $0 score.csv score-late.csv"; exit 2 }
+weights=(100. 60. 40.)
 
-sc=$1
-scl=$2
+(( $# < 2 )) || { echo "usage: $0 score.csv score-late.csv [...]"; exit 2 }
+
 
 get_user_score () {
   user=$1
@@ -13,25 +13,20 @@ get_user_score () {
   outof=$s[3]
 }
 
+maxscore=0
+currentscore=0
+
 for user in $(cut -d',' -f1 "$@" | sort -u); do
-  get_user_score $user $sc
-  origscore=$score
-  origoutof=$outof
-  get_user_score $user $scl
-  newscore=$score
-  outof=$((outof > origoutof ? outof : origoutof))
-  newscore=$((newscore < origscore ? origscore : newscore))
-
-  bonus=$((newscore - outof))
-  bonus=$((bonus < 0 ? 0 : bonus))
-
-  origscore=$((origscore > outof ? outof : origscore))
-  newscore=$((newscore > outof ? outof : newscore))
-  if (( newscore > origscore )); then
-    (( origscore = origscore + (newscore - origscore) * 60. / 100. ))
-  fi
-  (( origscore += bonus ))
-  typeset -i round
-  (( round = origscore * 100 ))
-  echo "$user,$((round / 100)).$((round % 100)),"
+    i=1
+    for sc in "$@"; do
+        get_user_score $user $sc
+        if (( maxscore < score )); then
+            currentscore=$((currentscore + (score - maxscore) * weights[i] / 100. ))
+            maxscore=$score
+        fi
+        ((++i))
+    done
+    typeset -i round
+    (( round = currentscore * 100 ))
+    echo "$user,$((round / 100)).$((round % 100)),"
 done
