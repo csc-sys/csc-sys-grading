@@ -2,7 +2,7 @@
 
 weights=(100. 60. 40.)
 
-(( $# < 2 )) || { echo "usage: $0 score.csv score-late.csv [...]"; exit 2 }
+(( $# >= 2 )) || { echo "usage: $0 score.csv score-late.csv [...]"; exit 2 }
 
 
 get_user_score () {
@@ -13,10 +13,10 @@ get_user_score () {
   outof=$s[3]
 }
 
-maxscore=0
-currentscore=0
 
 for user in $(cut -d',' -f1 "$@" | sort -u); do
+    maxscore=0
+    currentscore=0
     i=1
     for sc in "$@"; do
         get_user_score $user $sc
