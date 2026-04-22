@@ -2,24 +2,29 @@
 
 PROG=$0
 usage () {
-    echo "usage: $PROG ROSTER.csv SCORES.csv"
+    echo "usage: $PROG ROSTER.csv SCORES.csv [SCORES2.csv ...]"
     exit 2
 }
 
-(( $# == 2 )) || usage
+(( $# >= 2 )) || usage
 
 roster=$1
-scores=$2
+shift
 
-# Build associative array of scores keyed by username
-typeset -A score_map outof_map
+# Build score map: keep highest score per student across all score files.
+# Use -1 as sentinel for "no submission".
+typeset -A score_map
 outof=0
-while IFS=, read -r user sc oof _; do
-    score_map[$user]=$sc
-    outof=$oof
-done < $scores
+for scores in "$@"; do
+    while IFS=, read -r user sc oof _; do
+        outof=$oof
+        if [[ -z ${score_map[$user]} || $sc -gt ${score_map[$user]} ]]; then
+            score_map[$user]=$sc
+        fi
+    done < $scores
+done
 
-# Parse quoted CSV roster with awk, extract username+name for students
+# Parse quoted CSV roster with awk
 typeset -A roster_map
 awk 'BEGIN { FPAT = "([^,]*)|(\"[^\"]*\")" }
      NR > 1 && $5 == "Student" {
