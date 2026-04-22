@@ -13,19 +13,19 @@ scores=$2
 
 # Build associative array of scores keyed by username
 typeset -A score_map outof_map
-while IFS=, read -r user sc outof _; do
+outof=0
+while IFS=, read -r user sc oof _; do
     score_map[$user]=$sc
-    outof_map[$user]=$outof
+    outof=$oof
 done < $scores
 
-# Read roster, skip header, skip non-students
-tail -n +2 $roster | while IFS=, read -r name _ user _ role _; do
-    [[ $role == *Student* ]] || continue
-    # Strip surrounding quotes from name and user
-    name=${name//\"/}
-    user=${user//\"/}
-    user=${(U)user}
+# Parse quoted CSV roster with awk, extract username+name for students
+awk 'BEGIN { FPAT = "([^,]*)|(\"[^\"]*\")" }
+     NR > 1 && $5 == "Student" {
+         name = $1; gsub(/"/, "", name)
+         user = toupper($3); gsub(/"/, "", user)
+         print user, name
+     }' $roster | sort | while read -r user name; do
     sc=${score_map[$user]:-0}
-    outof=${outof_map[$user]:-${outof_map[(v)*]:-44}}
     printf "%-12s %-35s %2d/%d\n" $user "$name" $sc $outof
-done | sort
+done
