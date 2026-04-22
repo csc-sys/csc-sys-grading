@@ -42,6 +42,9 @@ typeset -A seen
     done
 } | sort | while read -r user; do
     name=${roster_map[$user]:-__MISSING__}
-    sc=${score_map[$user]:-0}
-    printf "%-12s %-35s %2d/%d\n" $user "$name" $sc $outof
+    if [[ -n ${score_map[$user]} ]]; then
+        printf "%-12s %-35s %2d/%d\n" $user "$name" ${score_map[$user]} $outof
+    else
+        printf "%-12s %-35s --/%d\n" $user "$name" $outof
+    fi
 done
