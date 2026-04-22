@@ -17,7 +17,8 @@ typeset -A score_map
 outof=0
 for scores in "$@"; do
     while IFS=, read -r user sc oof _; do
-        outof=$oof
+        [[ $user =~ ^[A-Z0-9] ]] || continue
+        (( oof > 0 )) && outof=$oof
         if [[ -z ${score_map[$user]} || $sc -gt ${score_map[$user]} ]]; then
             score_map[$user]=$sc
         fi
