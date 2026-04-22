@@ -20,12 +20,28 @@ while IFS=, read -r user sc oof _; do
 done < $scores
 
 # Parse quoted CSV roster with awk, extract username+name for students
+typeset -A roster_map
 awk 'BEGIN { FPAT = "([^,]*)|(\"[^\"]*\")" }
      NR > 1 && $5 == "Student" {
          name = $1; gsub(/"/, "", name)
          user = toupper($3); gsub(/"/, "", user)
          print user, name
-     }' $roster | sort | while read -r user name; do
+     }' $roster | while read -r user name; do
+    roster_map[$user]=$name
+done
+
+# Merge: all roster students + any score entries not in roster
+typeset -A seen
+{
+    for user in ${(k)roster_map}; do
+        echo $user
+        seen[$user]=1
+    done
+    for user in ${(k)score_map}; do
+        (( seen[$user] )) || echo $user
+    done
+} | sort | while read -r user; do
+    name=${roster_map[$user]:-__MISSING__}
     sc=${score_map[$user]:-0}
     printf "%-12s %-35s %2d/%d\n" $user "$name" $sc $outof
 done
