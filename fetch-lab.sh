@@ -1,4 +1,5 @@
 #!/bin/zsh -f
+setopt extendedglob
 
 PROG=$0
 labs=(traininglab-part1 traininglab-part2 mini-x86-parsing mini-x86-alu mini-x86-cmu stacklab asmlab dictlab shelllab cachelab locksmith malloclab proxylab)
@@ -57,7 +58,7 @@ for usr in $dirs; do
     locksmith)
       try tar cf $destdir/$usr-$lab.tar -C $home/submissions $usr-locksmith.txt;;
     *)
-      try cp -af $home/submissions/$usr-$lab.tar $destdir/;;
+      try cp -af $home/submissions/(#i)${usr}-${lab}.tar(N) $destdir/$usr-$lab.tar;;
   esac
 done
 

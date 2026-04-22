@@ -41,7 +41,6 @@ bwrap --ro-bind /usr /usr \
       --ro-bind /etc/hosts /etc/hosts \
       --file 8 /etc/passwd \
       --file 9 /etc/group \
-      --chmod 0555 / \
       "$@" \
     8< <(getent passwd $SET_UID 65534) \
     9< <(getent group $GID 65534)
